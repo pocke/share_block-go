@@ -40,3 +40,27 @@ func getAllBlockIDs(api *anaconda.TwitterApi) (ids []int64, err error) {
 	ids = []int64(sortedIDs)
 	return ids, nil
 }
+
+func DiffInt64(a, b []int64) []int64 {
+	if len(b) == 0 {
+		res := make([]int64, len(a))
+		copy(res, a)
+		return res
+	}
+
+	res := make([]int64, 0, len(a))
+	i := 0
+	for _, av := range a {
+		for j := i; ; j++ {
+			if b[j] == av {
+				break
+			} else if b[j] > av {
+				res = append(res, av)
+				j--
+				break
+			}
+		}
+	}
+
+	return res
+}
