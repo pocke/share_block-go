@@ -73,7 +73,7 @@ func DiffInt64(a, b []int64) []int64 {
 	res := make([]int64, 0, len(a))
 	i := 0
 	for _, av := range a {
-		for j := i; ; j++ {
+		for j := i; len(b) != j; j++ {
 			if b[j] == av {
 				break
 			} else if b[j] > av {
