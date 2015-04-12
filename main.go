@@ -1,9 +1,12 @@
 package main
 
 import (
+	"log"
 	"net/url"
 	"os"
 	"sort"
+	"strconv"
+	"time"
 
 	"github.com/ChimeraCoder/anaconda"
 )
@@ -14,8 +17,27 @@ func main() {
 	fromAPI := anaconda.NewTwitterApi(os.Getenv("FROM_AT"), os.Getenv("FROM_AS"))
 	toAPI := anaconda.NewTwitterApi(os.Getenv("TO_AT"), os.Getenv("TO_AS"))
 
-	getAllBlockIDs(fromAPI)
-	getAllBlockIDs(toAPI)
+	fromIDs, err := getAllBlockIDs(fromAPI)
+	if err != nil {
+		panic(err)
+	}
+	toIDs, err := getAllBlockIDs(toAPI)
+	if err != nil {
+		panic(err)
+	}
+	ids := DiffInt64(fromIDs, toIDs)
+
+	for _, id := range ids {
+		v := url.Values{}
+		v.Add("user_id", strconv.FormatInt(id, 10))
+		_, err := toAPI.Block(v)
+		log.Printf("Blocked %s.", id)
+		if err != nil {
+			log.Println(err)
+		}
+		time.Sleep(time.Minute)
+	}
+
 }
 
 func getAllBlockIDs(api *anaconda.TwitterApi) (ids []int64, err error) {
