@@ -25,9 +25,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	ids := DiffInt64(fromIDs, toIDs)
+	fromIDs.Diff(toIDs)
 
-	for _, id := range ids {
+	for _, id := range fromIDs {
 		v := url.Values{}
 		v.Add("user_id", strconv.FormatInt(id, 10))
 		_, err := toAPI.Block(v)
@@ -40,7 +40,7 @@ func main() {
 
 }
 
-func getAllBlockIDs(api *anaconda.TwitterApi) (ids []int64, err error) {
+func getAllBlockIDs(api *anaconda.TwitterApi) (ids IDs, err error) {
 	ids = make([]int64, 0)
 	c := anaconda.Cursor{ // dummy
 		Next_cursor:     -1,
@@ -57,32 +57,6 @@ func getAllBlockIDs(api *anaconda.TwitterApi) (ids []int64, err error) {
 		ids = append(ids, c.Ids...)
 	}
 
-	sortedIDs := IDs(ids)
-	sort.Sort(sortedIDs)
-	ids = []int64(sortedIDs)
+	sort.Sort(ids)
 	return ids, nil
-}
-
-func DiffInt64(a, b []int64) []int64 {
-	if len(b) == 0 {
-		res := make([]int64, len(a))
-		copy(res, a)
-		return res
-	}
-
-	res := make([]int64, 0, len(a))
-	i := 0
-	for _, av := range a {
-		for j := i; len(b) != j; j++ {
-			if b[j] == av {
-				break
-			} else if b[j] > av {
-				res = append(res, av)
-				j--
-				break
-			}
-		}
-	}
-
-	return res
 }
