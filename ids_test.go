@@ -2,14 +2,29 @@ package main
 
 import (
 	"reflect"
+	"sort"
 	"testing"
 )
 
-func TestDiffInt64(t *testing.T) {
+func TestIDsSort(t *testing.T) {
+	s := []int64{5, 3, 1, 4, 2}
+	ss := IDs(s)
+	sort.Sort(ss)
+	s = []int64(ss)
+	expected := []int64{1, 2, 3, 4, 5}
+	if !reflect.DeepEqual(s, expected) {
+		t.Errorf("Expected: %q, but got: %q", expected, s)
+	}
+}
+
+func TestIDsDiff(t *testing.T) {
 	assert := func(a, b, expected []int64) {
-		d := DiffInt64(a, b)
-		if !reflect.DeepEqual(expected, d) {
-			t.Errorf("expected: %+q, but got %+q", expected, d)
+		l := IDs(a)
+		r := IDs(b)
+		l.Diff(r)
+		e := IDs(expected)
+		if e.Eq(r) {
+			t.Fatalf("expected: %q, but got %q", e, l)
 		}
 	}
 
