@@ -8,7 +8,7 @@ import (
 
 func TestInt64sSort(t *testing.T) {
 	s := []int64{5, 3, 1, 4, 2}
-	ss := int64s(s)
+	ss := IDs(s)
 	sort.Sort(ss)
 	s = []int64(ss)
 	expected := []int64{1, 2, 3, 4, 5}

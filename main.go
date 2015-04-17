@@ -57,7 +57,7 @@ func getAllBlockIDs(api *anaconda.TwitterApi) (ids []int64, err error) {
 		ids = append(ids, c.Ids...)
 	}
 
-	sortedIDs := int64s(ids)
+	sortedIDs := IDs(ids)
 	sort.Sort(sortedIDs)
 	ids = []int64(sortedIDs)
 	return ids, nil
